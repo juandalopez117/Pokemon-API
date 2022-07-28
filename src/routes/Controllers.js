@@ -19,7 +19,7 @@ const PokemonsFromDB = async function(){
             return {
                 id: e.id,
                 Name: e.name, 
-                Health_Points: e.life, 
+/*                 Health_Points: e.life, 
                 Attack: e.attack, 
                 Defense: e.defense, 
                 Speed: e.speed,
@@ -27,7 +27,7 @@ const PokemonsFromDB = async function(){
                 Weight: e.weight,
                 Types: e.Types.map(
                     type => type.Type).join(', '),
-                created: e.created
+                created: e.created */
             }
         })
         return info
@@ -60,6 +60,7 @@ const GetAllPokemons = async () => {
 
 //! ------------------- Detail of a particular Pokemon in API -------------------
 
+
 const GetPokemonInfoApi = async (id) => {
     const Info = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
     const Data = Info.data
@@ -75,11 +76,26 @@ const GetPokemonInfoApi = async (id) => {
     }
 }
 
+//! ------------------- Detail of Pokemon in DB -------------------
 
+const GetPokemonInfoDb = async function(id){
+    const poke = await Pokemon.findByPk( id )
+    return poke
+
+}
+
+//! ------------------- Types of Pokemon and save in a Database -------------------
+
+const PokemonTypes = async function(){
+    const Type = await axios.get('https://pokeapi.co/api/v2/type')
+    return Type.data.results
+}
 
 module.exports = {
     PokemonsFromAPI,
     PokemonsFromDB,
     GetAllPokemons,
-    GetPokemonInfoApi
+    GetPokemonInfoApi,
+    GetPokemonInfoDb,
+    PokemonTypes
 }
