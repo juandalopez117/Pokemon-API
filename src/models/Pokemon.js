@@ -8,9 +8,16 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   sequelize.define('pokemon', 
   {
-    id: {
+    /* id: {
       type: DataTypes.STRING(3),
       primaryKey: true,
+    }, */
+
+    id: {
+      type: DataTypes.UUID, // numero random unico
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true
     },
 
     name: {

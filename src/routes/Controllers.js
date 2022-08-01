@@ -6,11 +6,11 @@ const axios = require('axios')
 const PokemonsFromDB = async function(){
     try {
         const PokemonsDB = await Pokemon.findAll({
-            include: {
+            include: { // que atributo del modelo Type se quiere traer
                 model: Type, 
-                attributes: ['Type'], 
+                attributes: ['type'], 
                 through: {
-                    attributes: [],
+                    attributes: [], // se trae los atrbutos mediante el nombre
                 },
             },
         })
@@ -18,16 +18,7 @@ const PokemonsFromDB = async function(){
         const info = await PokemonsDB.map( e => {
             return {
                 id: e.id,
-                Name: e.name, 
-/*                 Health_Points: e.life, 
-                Attack: e.attack, 
-                Defense: e.defense, 
-                Speed: e.speed,
-                Height: e.height,
-                Weight: e.weight,
-                Types: e.Types.map(
-                    type => type.Type).join(', '),
-                created: e.created */
+                name: e.name, 
             }
         })
         return info
@@ -42,6 +33,7 @@ const PokemonsFromAPI = async() => {
     const getPokemonsAPI = await axios.get('https://pokeapi.co/api/v2/pokemon/?limit=1154')
     const PokemonsAPI = getPokemonsAPI.data.results.map(dat => {
         return {
+            id: dat.url.substring(34, dat.url.length-1),
             name: dat.name
         }
     })
@@ -65,6 +57,7 @@ const GetPokemonInfoApi = async (id) => {
     const Info = await axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)
     const Data = Info.data
     return {
+        id: id,
         Name: Data.name,
         Health_Points: Data.stats[0].base_stat,
         Attack: Data.stats[1].base_stat,
@@ -87,8 +80,19 @@ const GetPokemonInfoDb = async function(id){
 //! ------------------- Types of Pokemon and save in a Database -------------------
 
 const PokemonTypes = async function(){
-    const Type = await axios.get('https://pokeapi.co/api/v2/type')
-    return Type.data.results
+
+    const typesAPI = await axios.get('https://pokeapi.co/api/v2/type')
+    const types = typesAPI.data.results.map(el => el.name)
+    types.forEach(el => {
+        Type.findOrCreate({
+            where: {
+                type: el
+            }
+        })
+    })
+    const alltypes = await Type.findAll()
+    return alltypes
+
 }
 
 module.exports = {
