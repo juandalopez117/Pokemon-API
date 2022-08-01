@@ -82,11 +82,11 @@ const GetPokemonInfoDb = async function(id){
 const PokemonTypes = async function(){
 
     const typesAPI = await axios.get('https://pokeapi.co/api/v2/type')
-    const types = typesAPI.data.results.map(el => el.name)
-    types.forEach(el => {
+    const types = typesAPI.data.results.map(type => type.name)
+    types.forEach(type => {
         Type.findOrCreate({
             where: {
-                type: el
+                type: type
             }
         })
     })

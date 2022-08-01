@@ -29,6 +29,8 @@ router.get('/pokemons', async function(req, res){
     }
 })
 
+
+//! Pokemons by id
 router.get('/pokemons/:id', async function (req, res){
     const {id} = req.params
     try {
@@ -47,33 +49,39 @@ router.get('/pokemons/:id', async function (req, res){
 })
 
 //! Append new pokemons into a database
+
 router.post('/pokemons', async function (req, res) {
     const {name, life, attack, defense, speed, height, 
         weight, createdInDB, Types} = req.body
-    let Pokenew = await Pokemon.create({
-                name,
-                life,
-                attack,
-                defense,
-                speed,
-                height,
-                weight,
-                createdInDB
-        })
+    try {
+        let Pokenew = await Pokemon.create({
+            name,
+            life,
+            attack,
+            defense,
+            speed,
+            height,
+            weight,
+            createdInDB
+    })
 
-        //! filtra del modelo types todos los tipos que coinciden con el pasado por body
-        let typesDB = await Type.findAll({
-            where: {
-                type: Types
-            }
-        })
-        //! Se añaden los types al pokemon nuevo hallado anteriormente 
-        Pokenew.addType(typesDB)
+    //! filter in the types model the types that are the same with the types passed by body
 
-        res.status(201).send('Pokemon Created')
-
+    let typesDB = await Type.findAll({
+        where: {
+            type: Types
+        }
+    })
+    
+    //! The types are pushed to the new pokemon
+    
+    Pokenew.addType(typesDB)
+    res.status(201).send('¡Pokemon Created!')
+    } 
+    catch (error) {
+        console.log(error)
+    }
 })
-
 router.get('/types', async function(req, res){
     const AllTypes = await PokemonTypes()
     try {
@@ -82,8 +90,4 @@ router.get('/types', async function(req, res){
         console.log(error)
     }
 })
-
-
 module.exports = router;
-//! organizar el indice y separar por casos. La forma del indice de la base de datos y del indice 
-//! de la api, y lo de que los indices están desordenados.
