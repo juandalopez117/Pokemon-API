@@ -20,7 +20,7 @@ module.exports = (sequelize) => {
       primaryKey: true
     },
 
-    name: {
+    Name: {
       type: DataTypes.STRING,
       validate: {
         is: {
@@ -31,31 +31,35 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
 
-    life: {
+    Health_Points: {
       type: DataTypes.INTEGER,
     },
 
-    attack: {
+    Attack: {
       type: DataTypes.INTEGER
     },
 
-    defense: {
+    Defense: {
       type: DataTypes.INTEGER
     },
 
-    speed: {
+    Speed: {
       type: DataTypes.INTEGER
     },
 
-    height: {
+    Height: {
       type: DataTypes.INTEGER
     }, 
 
-    weight: {
+    Weight: {
       type: DataTypes.INTEGER
     },
 
-    created: {
+/*     type: {
+      type: DataTypes.STRING
+    }, */
+
+    Created: {
       type: DataTypes.BOOLEAN,
       allowNull: false, 
       defaultValue: true

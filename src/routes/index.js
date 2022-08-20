@@ -2,7 +2,7 @@ const { Router } = require('express');
 const axios = require('axios')
 const {Pokemon, Type} = require('../db.js')
 const {GetAllPokemons, PokemonsFromAPI, GetPokemonInfoApi, GetPokemonInfoDb,
-PokemonTypes} = require('./Controllers.js')
+PokemonTypes, PokemonsIndex} = require('./Controllers.js')
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 const router = Router()
@@ -51,32 +51,30 @@ router.get('/pokemons/:id', async function (req, res){
 //! Append new pokemons into a database
 
 router.post('/pokemons', async function (req, res) {
-    const {name, life, attack, defense, speed, height, 
-        weight, createdInDB, Types} = req.body
+    const {Name, Health_Points, Attack, Defense, Speed, Height, 
+        Weight, Types, createdInDB} = req.body
     try {
-        let Pokenew = await Pokemon.create({
-            name,
-            life,
-            attack,
-            defense,
-            speed,
-            height,
-            weight,
+        const Pokenew = await Pokemon.create({
+            Name,
+            Health_Points,
+            Attack,
+            Defense,
+            Speed,
+            Height,
+            Weight,
             createdInDB
     })
-
-    //! filter in the types model the types that are the same with the types passed by body
-
-    let typesDB = await Type.findAll({
-        where: {
-            type: Types
+    if(Types.length > 0 ){
+        for(let i = 0; i < Types.length; i++){
+            const pokemonDB = await Type.findOrCreate({
+                where: { type: Types[i]}
+            })
+            Pokenew.setTypes(pokemonDB[0])
+            console.log(pokemonDB[0])
         }
-    })
-    
-    //! The types are pushed to the new pokemon
-    
-    Pokenew.addType(typesDB)
-    res.status(201).send('¡Pokemon Created!')
+        res.json(Pokenew)
+    }
+
     } 
     catch (error) {
         console.log(error)

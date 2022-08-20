@@ -5,7 +5,8 @@ module.exports = (sequelize) => {
     sequelize.define('Type', {
         type: {
             type: DataTypes.STRING, 
-            allowNull: true
+            allowNull: true,
+
         }
     }, {
         timestamps: false
